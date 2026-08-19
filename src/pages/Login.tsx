@@ -40,7 +40,7 @@ export const Login = observer(() => {
     } 
       catch (error: unknown) {
       if (error instanceof Error) {
-        setApiError(error.message); // Используй ту же функцию/переменную, что и была у тебя раньше
+        setApiError(error.message);
       } else {
         setApiError('Произошла неизвестная ошибка');
       }
