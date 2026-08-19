@@ -18,7 +18,6 @@ const readStoredUser = (): AuthUser | null => {
   try {
     return JSON.parse(raw) as AuthUser;
   } catch {
-    // повреждённые данные в localStorage не должны ломать приложение
     return null;
   }
 };

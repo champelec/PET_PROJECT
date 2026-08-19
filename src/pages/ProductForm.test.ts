@@ -9,6 +9,7 @@ describe('Валидация формы товара (Zod)', () => {
       category: 'laptops',
       price: 1500.50,
       stock: 12,
+      rating: 4.5,
       thumbnail: 'https://example.com/macbook.png'
     };
     

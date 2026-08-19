@@ -29,6 +29,7 @@ export const ProductSidebar = observer(() => {
       await productsStore.deleteProduct(product.id);
       handleClose();
     } catch {
+      /* Игнор */
     }
   };
 

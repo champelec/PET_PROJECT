@@ -16,8 +16,6 @@ export interface ProductsListResponse {
   total: number;
 }
 
-// 404 от DummyJSON нужно отличать от прочих сетевых/серверных ошибок,
-// чтобы UI мог показать отдельное состояние "товар не найден".
 export class NotFoundError extends Error {
   constructor(message = 'Товар не найден') {
     super(message);

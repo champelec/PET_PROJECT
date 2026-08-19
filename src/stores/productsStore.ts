@@ -143,12 +143,19 @@ class ProductsStore {
         this.total = Math.max(0, data.total + createdMatchedCount - deletedCount);
         this.isLoading = false;
       });
-    } catch (err: any) {
-      if (err.name === 'AbortError') return;
-      runInAction(() => {
-        this.listError = err.message;
-        this.isLoading = false;
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') return;
+        runInAction(() => {
+          this.listError = error.message;
+          this.isLoading = false;
+        });
+      } else {
+        runInAction(() => {
+          this.listError = 'Произошла неизвестная ошибка';
+          this.isLoading = false;
+        });
+      }
     }
   }
 
@@ -188,25 +195,32 @@ class ProductsStore {
         this.selectedProduct = patch ? { ...data, ...patch } : data;
         this.isProductLoading = false;
       });
-    } catch (err: any) {
-      if (err.name === 'AbortError') return;
-      
-      if (err instanceof NotFoundError && patch) {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') return;
+        
+        if (error instanceof NotFoundError && patch) {
+          runInAction(() => {
+            this.selectedProduct = patch as Product;
+            this.isProductLoading = false;
+          });
+          return;
+        }
+
         runInAction(() => {
-          this.selectedProduct = patch as Product;
+          if (error instanceof NotFoundError) {
+            this.productNotFound = true;
+          } else {
+            this.productError = error.message;
+          }
           this.isProductLoading = false;
         });
-        return;
+      } else {
+        runInAction(() => {
+          this.productError = 'Произошла неизвестная ошибка';
+          this.isProductLoading = false;
+        });
       }
-
-      runInAction(() => {
-        if (err instanceof NotFoundError) {
-          this.productNotFound = true;
-        } else {
-          this.productError = err.message;
-        }
-        this.isProductLoading = false;
-      });
     }
   }
 
@@ -222,9 +236,13 @@ class ProductsStore {
       });
       notifySuccess('Товар успешно создан');
       return created;
-    } catch (err: any) {
-      notifyError(err.message);
-      throw err;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        notifyError(error.message);
+      } else {
+        notifyError('Произошла неизвестная ошибка');
+      }
+      throw error;
     }
   }
 
@@ -247,9 +265,13 @@ class ProductsStore {
         if (this.selectedProduct?.id === id) this.selectedProduct = merged;
       });
       notifySuccess('Изменения сохранены');
-    } catch (err: any) {
-      notifyError(err.message);
-      throw err;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        notifyError(error.message);
+      } else {
+        notifyError('Произошла неизвестная ошибка');
+      }
+      throw error;
     }
   }
 
@@ -271,12 +293,17 @@ class ProductsStore {
         this.isDeleting = false;
       });
       notifySuccess('Товар успешно удалён');
-    } catch (err: any) {
+    } catch (error: unknown) {
       runInAction(() => {
         this.isDeleting = false;
       });
-      notifyError(err.message);
-      throw err;
+      
+      if (error instanceof Error) {
+        notifyError(error.message);
+      } else {
+        notifyError('Произошла неизвестная ошибка');
+      }
+      throw error;
     }
   }
 

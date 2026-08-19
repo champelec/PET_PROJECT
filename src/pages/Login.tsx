@@ -37,8 +37,13 @@ export const Login = observer(() => {
 
       const redirect = searchParams.get('redirect') || '/products';
       navigate(decodeURIComponent(redirect), { replace: true });
-    } catch (err: any) {
-      setApiError(err.message);
+    } 
+      catch (error: unknown) {
+      if (error instanceof Error) {
+        setApiError(error.message); // Используй ту же функцию/переменную, что и была у тебя раньше
+      } else {
+        setApiError('Произошла неизвестная ошибка');
+      }
     } finally {
       setIsLoading(false);
     }

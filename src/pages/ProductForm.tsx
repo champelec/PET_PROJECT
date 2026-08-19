@@ -22,9 +22,7 @@ export const productSchema = z.object({
   rating: z.number({ invalid_type_error: 'Обязательное поле' })
     .min(0, 'Мин 0')
     .max(5, 'Макс 5')
-    .refine((val) => /^\d+(\.\d{1,2})?$/.test(String(val)), 'Не более 2 знаков после запятой')
-    .optional()
-    .default(0),
+    .refine((val) => /^\d+(\.\d{1,2})?$/.test(String(val)), 'Не более 2 знаков после запятой'),
   thumbnail: z.union([z.literal(''), z.string().url('Некорректный URL')]).optional(),
 });
 
@@ -75,6 +73,7 @@ export const ProductForm = observer(() => {
         navigate(`/products${location.search}`);
       }
     } catch {
+      /* Игнор */
     } finally {
       setIsSubmitting(false);
     }

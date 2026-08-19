@@ -51,6 +51,7 @@ export const Products = observer(() => {
     try {
       await productsStore.deleteProduct(product.id);
     } catch {
+      /* Игнор */
     } finally {
       setDeletingId(null);
     }
